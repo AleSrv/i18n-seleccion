@@ -1,0 +1,69 @@
+---
+// src/Layouts/BaseLayout.astro
+const { lang, t } = Astro.props;
+
+const languages = [
+  { code: "es", label: t.languageOptions.es },
+  { code: "en", label: t.languageOptions.en },
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{t.nav.home}</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href={`/${lang}/`}>{t.nav.home}</a>
+        <a href={`/${lang}/about`}>{t.nav.about}</a>
+      </nav>
+
+      <form id="lang-form">
+        <label for="lang-select">{t.languageLabel}:</label>
+        <select name="lang-select" id="lang-select">
+          {
+            languages.map((langOpt) => (
+              <option value={langOpt.code} selected={langOpt.code === lang}>
+                {langOpt.label}
+              </option>
+            ))
+          }
+        </select>
+      </form>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <script>
+      const select = document.getElementById("lang-select");
+
+      select?.addEventListener("change", (event) => {
+        const target = event.target as HTMLSelectElement;
+        const selectedLang = target.value;
+
+        const currentPath = window.location.pathname; // e.g. "/en/about"
+        const [, , ...rest] = currentPath.split("/"); // ["", "en", "about"] → rest = ["about"]
+        const newPath = `/${selectedLang}/${rest.join("/")}`; // "/es/about"
+        window.location.pathname = newPath;
+      });
+    </script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+    </style>
+  </body>
+</html>

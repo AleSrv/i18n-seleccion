@@ -1,0 +1,23 @@
+---
+//src\pages\[lang]\index.astro
+import type { GetStaticPaths } from "astro";
+import es from "../../i18n/es";
+import en from "../../i18n/en";
+import type { Language } from "../../types/Language.type";
+import BaseLayout from "../../Layouts/BaseLayout.astro";
+export const getStaticPaths: GetStaticPaths = () => {
+  return [{ params: { lang: "es" } }, { params: { lang: "en" } }];
+  //podriamos hacer un map para generar todos los params de todos los idiomas
+};
+
+export const defaultRedirect = "/es";
+
+const lang = Astro.params.lang as Language;
+const translations = {es,en}
+const t = translations[lang]
+---
+
+<BaseLayout lang={lang} t={t}>
+  <h1>{t.home.title}</h1>
+  <p>{t.home.subtitle}</p>
+</BaseLayout>
